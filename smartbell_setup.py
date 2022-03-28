@@ -14,10 +14,13 @@ cnx = sqlite3.connect('smartbell.db', isolation_level=None);
 
 cursor = cnx.cursor()
 
-cursor.execute("DROP TABLE member;")
-cursor.execute("DROP TABLE equipment;")
-
-
+cursor.execute("DROP TABLE IF EXISTS member;")
+cursor.execute("DROP TABLE IF EXISTS equipment;")
+cursor.execute("DROP TABLE IF EXISTS class;")
+cursor.execute("DROP TABLE IF EXISTS membership;")
+cursor.execute("DROP TABLE IF EXISTS employee;")
+cursor.execute("DROP TABLE IF EXISTS service;")
+cursor.execute("DROP TABLE IF EXISTS class_attendance;")
 
 
 # Member table
@@ -28,7 +31,6 @@ cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payme
 cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payment_status, last_attended, referrals, waiver_status) VALUES (\'4\', \'Saul Goodman\', \'11-12-1960\', \'regular\', \'paid\', \'12-12-2021\', 1, \'pending\');")
 cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payment_status, last_attended, referrals, waiver_status) VALUES (\'5\', \'James McGill\', \'05-22-1990\', \'silver\', \'paid\', \'07-14-2021\', 1, \'approved\');")
 cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payment_status, last_attended, referrals, waiver_status) VALUES (\'6\', \'Skylar White\', \'08-30-1975\', \'gold\', \'paid\', \'03-20-2022\', 0, \'pending\');")
-
 
 # Membership Option Table
 cursor.execute("CREATE TABLE IF NOT EXISTS membership (membership_id integer, membership_plan_name varchar(255), cost integer, payment_period varchar(255), benefits varchar(255));")

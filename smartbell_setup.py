@@ -33,20 +33,20 @@ cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payme
 cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payment_status, last_attended, referrals, waiver_status) VALUES (\'6\', \'Skylar White\', \'08-30-1975\', \'gold\', \'paid\', \'03-20-2022\', 0, \'pending\');")
 
 # Membership Option Table
-cursor.execute("CREATE TABLE IF NOT EXISTS membership (membership_id integer, membership_plan_name varchar(255), cost integer, payment_period varchar(255), benefits varchar(255));")
+cursor.execute("CREATE TABLE IF NOT EXISTS membership (membership_id integer primary key, membership_plan_name varchar(255), cost integer, payment_period varchar(255), benefits varchar(255));")
 cursor.execute("INSERT INTO membership (membership_id, membership_plan_name, cost, payment_period, benefits) VALUES (\'1\', \'platinum\', \'100\', \'monthly\', \'all amenities, 2 weekly guest passes, and 24\7 access\');")
 cursor.execute("INSERT INTO membership (membership_id, membership_plan_name, cost, payment_period, benefits) VALUES (\'2\', \'gold\', \'50\', \'monthly\', \'partial amenities, 1 weekly guest pass and access until 3 am\');")
 cursor.execute("INSERT INTO membership (membership_id, membership_plan_name, cost, payment_period, benefits) VALUES (\'3\', \'silver\', \'40\', \'monthly\', \'partial amenities, access until 12am\');")
 cursor.execute("INSERT INTO membership (membership_id, membership_plan_name, cost, payment_period, benefits) VALUES (\'4\', \'regular\', \'25\', \'monthly\', \'normal access\');")
 
 # # Employee Table
-cursor.execute("CREATE TABLE IF NOT EXISTS employee (employee_id integer, employee_name varchar(255), hourly_wage integer, SSN varchar(255), hire_date varchar(255));")
-cursor.execute("INSERT INTO employee (employee_id, employee_name, hourly_wage, SSN, hire_date) VALUES (\'3123\', \'Dwayne Johnson\', \'35\', \'223458291\', \'02-21-2015\');")
-cursor.execute("INSERT INTO employee (employee_id, employee_name, hourly_wage, SSN, hire_date) VALUES (\'2123\', \'Arnold Schwarzenegger\', \'30\', \'2934732283\', \'03-04-2017\');")
+cursor.execute("CREATE TABLE IF NOT EXISTS employee (employee_id integer primary key, name varchar(255), hourly_wage real, SSN varchar(255), hire_date varchar(255));")
+cursor.execute("INSERT INTO employee (employee_id, name, hourly_wage, SSN, hire_date) VALUES (\'3123\', \'Dwayne Johnson\', \'35\', \'223458291\', \'02-21-2015\');")
+cursor.execute("INSERT INTO employee (employee_id, name, hourly_wage, SSN, hire_date) VALUES (\'2123\', \'Arnold Schwarzenegger\', \'30\', \'2934732283\', \'03-04-2017\');")
 
 
 # # Equipment table
-cursor.execute("CREATE TABLE IF NOT EXISTS equipment (equipment_id integer, machine_name varchar(255), notes varchar(255), quality_status varchar(255));")
+cursor.execute("CREATE TABLE IF NOT EXISTS equipment (equipment_id integer primary key, machine_name varchar(255), notes varchar(255), quality_status varchar(255));")
 cursor.execute("INSERT INTO equipment (equipment_id, machine_name, notes, quality_status) VALUES (\'1\', \'bench press\', \'no notes\', \'brand new\');")
 cursor.execute("INSERT INTO equipment (equipment_id, machine_name, notes, quality_status) VALUES (\'2\', \'bench press\', \'no notes\', \'brand new\');")
 cursor.execute("INSERT INTO equipment (equipment_id, machine_name, notes, quality_status) VALUES (\'3\', \'shoulder press\', \'no notes\', \'lightly used\');")

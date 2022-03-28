@@ -24,13 +24,13 @@ cursor.execute("DROP TABLE IF EXISTS class_attendance;")
 
 
 # Member table
-cursor.execute("CREATE TABLE IF NOT EXISTS member (member_id integer primary key, name varchar(255), birthday varchar(255), membership varchar(255), payment_status varchar(255), last_attended varchar(255), referrals integer, waiver_status varchar(255));")
-cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payment_status, last_attended, referrals, waiver_status) VALUES (\'1\', \'John Brown\', \'07-11-2001\', \'platinum\', \'paid\', \'03-11-2022\', 1, \'approved\');")
-cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payment_status, last_attended, referrals, waiver_status) VALUES (\'2\', \'Alex Jones\', \'12-25-1980\', \'gold\', \'unpaid\', \'02-04-2019\', 2, \'approved\');")
-cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payment_status, last_attended, referrals, waiver_status) VALUES (\'3\', \'Will Smith\', \'11-12-1968\', \'regular\', \'paid\', \'03-27-2022\', 0, \'pending\');")
-cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payment_status, last_attended, referrals, waiver_status) VALUES (\'4\', \'Saul Goodman\', \'11-12-1960\', \'regular\', \'paid\', \'12-12-2021\', 1, \'pending\');")
-cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payment_status, last_attended, referrals, waiver_status) VALUES (\'5\', \'James McGill\', \'05-22-1990\', \'silver\', \'paid\', \'07-14-2021\', 1, \'approved\');")
-cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payment_status, last_attended, referrals, waiver_status) VALUES (\'6\', \'Skylar White\', \'08-30-1975\', \'gold\', \'paid\', \'03-20-2022\', 0, \'pending\');")
+cursor.execute("CREATE TABLE IF NOT EXISTS member (member_id integer primary key, name varchar(255), birthday varchar(255), membership integer, payment_status varchar(255), last_attended varchar(255), referrals integer, waiver_status varchar(255));")
+cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payment_status, last_attended, referrals, waiver_status) VALUES (\'1\', \'John Brown\', \'07-11-2001\', \'1\', \'paid\', \'03-11-2022\', 1, \'approved\');")
+cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payment_status, last_attended, referrals, waiver_status) VALUES (\'2\', \'Alex Jones\', \'12-25-1980\', \'2\', \'unpaid\', \'02-04-2019\', 2, \'approved\');")
+cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payment_status, last_attended, referrals, waiver_status) VALUES (\'3\', \'Will Smith\', \'11-12-1968\', \'4\', \'paid\', \'03-27-2022\', 0, \'pending\');")
+cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payment_status, last_attended, referrals, waiver_status) VALUES (\'4\', \'Saul Goodman\', \'11-12-1960\', \'4\', \'paid\', \'12-12-2021\', 0, \'pending\');")
+cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payment_status, last_attended, referrals, waiver_status) VALUES (\'5\', \'James McGill\', \'05-22-1990\', \'3\', \'paid\', \'07-14-2021\', 1, \'approved\');")
+cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payment_status, last_attended, referrals, waiver_status) VALUES (\'6\', \'Skylar White\', \'08-30-1975\', \'2\', \'paid\', \'03-20-2022\', 0, \'pending\');")
 
 # Membership Option Table
 cursor.execute("CREATE TABLE IF NOT EXISTS membership (membership_id integer primary key, membership_plan_name varchar(255), cost integer, payment_period varchar(255), benefits varchar(255));")
@@ -58,10 +58,11 @@ cursor.execute("INSERT INTO service (equipment_id, employee_id, notes, date) VAL
 
 # # Classes table
 cursor.execute("CREATE TABLE IF NOT EXISTS class (instructor_name varchar(255), class_name varchar(255), time varchar(255), reservations integer, capacity integer, cost integer);")
-cursor.execute("INSERT INTO class (instructor_name, class_name, time, reservations, capacity, cost) VALUES (\'Dwayne Johnson\', \'axe throwing\', \'8:00 EDT 03-31-2022\', \'8\', \'10\', \'$100\');")
+cursor.execute("INSERT INTO class (instructor_name, class_name, time, reservations, capacity, cost) VALUES (\'Dwayne Johnson\', \'axe throwing\', \'8:00 EDT 03-31-2022\', \'1\', \'10\', \'$100\');")
 
 # Class Attendance
 cursor.execute("CREATE TABLE IF NOT EXISTS class_attendance (instructor_name varchar(255), time varchar(255), member_id integer);")
+cursor.execute("INSERT INTO class_attendance (instructor_name, time, member_id) VALUES (\'Dwayne Johnson\', \'8:00 EDT 03-31-2022\', \'4\');")
 
 
 cnx.commit()

@@ -1,8 +1,10 @@
+from ast import AsyncFunctionDef
 from select import select
 import sqlite3
 import re
 import string
 from termcolor import colored
+import pandas as pd
 
 
 from datetime import datetime
@@ -13,6 +15,18 @@ cnx = sqlite3.connect('smartbell.db', isolation_level=None)
 cur = cnx.cursor()
 # cur.execute('SELECT * FROM class')
 # print(cur.fetchall())
+
+
+# columns = {}
+# columns['member'] = ['member_id', 'name', 'birthday', 'membership',
+#                      'payment_status', 'last_attended', 'referrals', 'waiver_status']
+# columns['membership'] = [
+#     'membership_id, membership_plan_name, cost, payment_period, benefits']
+# columns['employee'] = ['employee_id', 'name', 'hourly_wage', 'SSN', 'hire_date']
+# columns['equipment'] = ['equipment_id', 'machine_name', 'notes', 'quality_status']
+# columns['service'] = ['equipment_id', 'employee_id', 'notes', 'date']
+# columns['class'] = ['instructor_name', 'class_name', 'time', 'reservations', 'capacity', 'cost']
+# columns['class_attendance'] = ['instructor_name', 'time', 'member_id']
 
 
 def is_date(string, fuzzy=False):
@@ -28,13 +42,6 @@ def is_date(string, fuzzy=False):
 
     except ValueError:
         return False
-
-
-def print_rows():
-    rows = cur.fetchall()
-    for row in rows:
-        print(colored(row, 'yellow'))
-    print()
 
 
 tables = {
@@ -73,10 +80,10 @@ quality_statuses = {
 
 keep_going = True
 
-print(colored('Hello! Welcome to Smartbell (the dumb version).\n', 'cyan'))
+print(colored('\nHello! Welcome to Smartbell (the dumb version).\n', 'cyan'))
 
 while keep_going:
-    print('\nPlease select one of the following options:')
+    print('Please select one of the following options:')
     print('1: Read a table\n2: Insert to a table\n3: Access reports')
     selections = []
     selections.append(input())
@@ -108,8 +115,9 @@ while keep_going:
     ######
     if selections[0] == 1:
 
-        cur.execute('SELECT * FROM {} '.format(tables[selections[1]]))
-        print_rows()
+        query = 'SELECT * FROM {} '.format(tables[selections[1]])
+        df = pd.read_sql_query(query, cnx)
+        print(colored(df.to_string(index=False), 'yellow'))
 
     ########
     # REPORT
@@ -141,8 +149,8 @@ while keep_going:
                 selections[-1] = input()
             selections[-1] = int(selections[-1])
 
-            cur.execute('SELECT * FROM member WHERE payment_status=(?)',
-                        (payment_statuses[selections[-1]],))
+            query = 'SELECT * FROM member WHERE payment_status=(?)'
+            params = [payment_statuses[selections[-1]]]
 
         elif selections[-1] == 2:
             print('\nWhich membership type would you like a report on?')
@@ -154,12 +162,13 @@ while keep_going:
                 selections[-1] = input()
             selections[-1] = int(selections[-1])
 
-            cur.execute('SELECT * FROM member WHERE membership=(?)',
-                        (memberships[selections[-1]],))
+            query = 'SELECT * FROM member WHERE membership=(?)'
+            params = [memberships[selections[-1]]]
 
         elif selections[-1] == 3:
 
-            cur.execute('SELECT * FROM member WHERE referrals >= 1')
+            query = 'SELECT * FROM member WHERE referrals >= ?'
+            params = [1]
 
         elif selections[-1] == 4:
             print('\nWhich waiver_status you like a report on?')
@@ -171,8 +180,8 @@ while keep_going:
                 selections[-1] = input()
             selections[-1] = int(selections[-1])
 
-            cur.execute('SELECT * FROM member WHERE waiver_status=(?)',
-                        (waiver_statuses[selections[-1]],))
+            query = 'SELECT * FROM member WHERE waiver_status=(?)'
+            params = [waiver_statuses[selections[-1]]]
 
         elif selections[-1] == 5:
             print('\nWhich quality_status would you like a report on?')
@@ -183,11 +192,12 @@ while keep_going:
                 print('1: brand new\n2: lightly used\n3: heavily used')
                 selections[-1] = input()
             selections[-1] = int(selections[-1])
+            query = 'SELECT * FROM equipment WHERE quality_status=?'
+            params = [quality_statuses[selections[-1]]]
 
-            cur.execute('SELECT * FROM equipment WHERE quality_status=(?)',
-                        (quality_statuses[selections[-1]],))
-
-        print_rows()
+        df = pd.read_sql_query(query, cnx, params=params)
+        print()
+        print(colored(df.to_string(index=False), 'yellow'))
 
     #######
     # WRITE
@@ -215,6 +225,7 @@ while keep_going:
                 print(colored('\nPlease select a valid option.', 'red'))
                 print('1: platinum\n2: gold\n3: silver\n4: regular')
                 member['membership'] = input()
+            member
 
             options = [str(i) for i in range(1, 2)]
             print('\nWhat is their waiver status')
@@ -234,8 +245,8 @@ while keep_going:
 
             cur.execute("INSERT INTO member (name, birthday, membership, payment_status, last_attended, referrals, waiver_status) \
                 VALUES (:name, :birthday, :membership, :payment_status, :last_attended, :referrals, :waiver_status)", member)
-            print(colored('\nEntry added to database "' + tables[selections[1]] + '"', 'green'))
-
+            print(colored('\nEntry added to database "' +
+                  tables[selections[1]] + '"', 'green'))
 
         elif selections[1] == 5:
             employee = {}
@@ -244,7 +255,7 @@ while keep_going:
 
             print("\nWhat is the employee's hourly wage?")
             employee['hourly_wage'] = input()
-            while not employee['hourly_wage'].replace('.','',1).isdigit():
+            while not employee['hourly_wage'].replace('.', '', 1).isdigit():
                 print(colored('\nPlease enter a valid number', 'red'))
                 employee['hourly_wage'] = input()
             employee['hourly_wage'] = float(employee['hourly_wage'])
@@ -261,8 +272,9 @@ while keep_going:
                 datetime.today(), '%m-%d-%Y')
             cur.execute("INSERT INTO employee (name, hourly_wage, SSN, hire_date) \
                 VALUES (:name, :hourly_wage, :SSN, :hire_date)", employee)
-            
-            print(colored('\nEntry added to database "' + tables[selections[1]] + '"', 'green'))
+
+            print(colored('\nEntry added to database "' +
+                  tables[selections[1]] + '"', 'green'))
 
         else:
             print('\nSorry, that functionality is not currently supported')

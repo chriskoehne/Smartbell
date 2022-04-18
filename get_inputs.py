@@ -163,7 +163,7 @@ while keep_going:
             selections[-1] = int(selections[-1])
 
             query = 'SELECT * FROM member WHERE membership=(?)'
-            params = [memberships[selections[-1]]]
+            params = [selections[-1]]
 
         elif selections[-1] == 3:
 
@@ -225,7 +225,7 @@ while keep_going:
                 print(colored('\nPlease select a valid option.', 'red'))
                 print('1: platinum\n2: gold\n3: silver\n4: regular')
                 member['membership'] = input()
-            member
+            member['membership'] = int(member['membership'])
 
             options = [str(i) for i in range(1, 2)]
             print('\nWhat is their waiver status')

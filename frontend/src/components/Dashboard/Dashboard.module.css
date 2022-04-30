@@ -1,0 +1,27 @@
+.box {
+  margin-top: 2%;
+  display: flex;
+  flex-flow: column;
+  height: 100vh;
+}
+.inlineDiv {
+  display: inline;
+}
+.cardRow {
+  height: 100%;
+  padding-left: 2%;
+  padding-right: 2%;
+}
+
+.cardCol {
+  height: 50%;
+  padding-bottom: 2%;
+}
+
+.menuCard {
+  height: 100%;
+  background-color: var(--smartbell);
+  /* color: white; */
+  overflow: auto;
+
+}

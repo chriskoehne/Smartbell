@@ -1,3 +1,4 @@
+from unicodedata import name
 from django.contrib.auth.models import User
 from .models import *
 from rest_framework import serializers
@@ -26,6 +27,7 @@ class MembershipSerializer(serializers.ModelSerializer):
 
 
 class MemberSerializer(serializers.ModelSerializer):
+    membership_type = serializers.SlugRelatedField(slug_field='name',queryset=Membership.objects.all())
     class Meta:
         model = Member
         fields = ['id', 'name', 'birthday', 'membership_type', 'good_payment_standing',

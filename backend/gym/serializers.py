@@ -2,46 +2,57 @@ from django.contrib.auth.models import User
 from .models import *
 from rest_framework import serializers
 
-class EmployeeSerializer(serializers.HyperlinkedModelSerializer):
+
+class EmployeeSerializer(serializers.ModelSerializer):
     wage = serializers.CharField()
+
     class Meta:
         model = Employee
         fields = ['name', 'hire_date', 'wage', 'ssn']
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['url', 'username', 'email', 'is_staff']
 
-class MembershipSerializer(serializers.HyperlinkedModelSerializer):
+
+class MembershipSerializer(serializers.ModelSerializer):
     cost = serializers.CharField()
+
     class Meta:
         model = Membership
-        fields = ['id','name','cost','payment_periods','benefits']
+        fields = ['id', 'name', 'cost', 'payment_periods', 'benefits']
 
-class MemberSerializer(serializers.HyperlinkedModelSerializer):
+
+class MemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Member
-        fields = ['name','birthday','membership_type','good_payment_standing',
-                    'last_attended', 'referrals']
+        fields = ['id', 'name', 'birthday', 'membership_type', 'good_payment_standing',
+                  'last_attended', 'referrals']
 
-class EquipmentSerializer(serializers.HyperlinkedModelSerializer):
+
+class EquipmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Equipment
         fields = ['name', 'status', 'notes']
 
-class ServiceHistSerializer(serializers.HyperlinkedModelSerializer):
+
+class ServiceHistSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceHistory
-        fields = ['equipment_id','employee_id','date']
+        fields = ['equipment_id', 'employee_id', 'date']
 
-class GymClassSerializer(serializers.HyperlinkedModelSerializer):
+
+class GymClassSerializer(serializers.ModelSerializer):
     cost = serializers.CharField()
+
     class Meta:
         model = GymClass
         fields = ['instructor', 'datetime', 'cost']
 
-class GymClassAttendanceSerializer(serializers.HyperlinkedModelSerializer):
+
+class GymClassAttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = GymClassAttendance
-        fields = ['gym_class','member']
+        fields = ['gym_class', 'member']

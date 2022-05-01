@@ -3,18 +3,15 @@ import React from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Dashboard from './components/Dashboard/Dashboard';
 import NavRoute from './components/Routing/NavRoute';
-import Members from './components/Members/Members';
-import Equipment from './components/Equipment/Equipment';
-import Classes from './components/Classes/Classes';
-import Memberships from './components/Memberships/Memberships';
-
-
+import Members from './components/DetailPages/Members/Members';
+import Equipment from './components/DetailPages/Equipment/Equipment';
+import Classes from './components/DetailPages/Classes/Classes';
+import Memberships from './components/DetailPages/Memberships/Memberships';
 
 const App = () => {
   return (
     <Routes>
       <Route path='/' element={<Navigate replace to='/dashboard' />} />
-
       {/* <Route exact path='/dashboard' element={<Dashboard />} /> */}
 
       <Route exact path='/dashboard' element={<NavRoute />}>

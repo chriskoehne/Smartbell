@@ -2,6 +2,7 @@
   margin-top: 2%;
   display: flex;
   flex-flow: column;
+  overflow-y: hidden;
   height: 100vh;
 }
 .inlineDiv {

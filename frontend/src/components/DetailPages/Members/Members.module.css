@@ -1,0 +1,12 @@
+.box {
+  margin-top: 2%;
+  display: flex;
+  flex-flow: column;
+  overflow-y: hidden;
+  height: 100vh;
+}
+
+.tableHouse {
+  margin: 5%;
+  margin-top: 2%;
+}

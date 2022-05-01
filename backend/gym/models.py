@@ -29,6 +29,8 @@ class Membership(models.Model):
 
     def _str_(self):
         return self.name
+    def __str__(self):
+        return self.name
 
 
 class Member(models.Model):

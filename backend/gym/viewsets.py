@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from .models import *
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from .serializers import *
 
 class UserViewSet(viewsets.ModelViewSet):

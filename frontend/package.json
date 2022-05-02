@@ -9,7 +9,7 @@
     "react": "^16.3.0",
     "react-bootstrap": "^2.3.1",
     "react-bootstrap-table-next": "^4.0.3",
-    "react-bootstrap-typeahead": "^6.0.0-alpha.11",
+    "react-bootstrap-typeahead": "^4.2.3",
     "react-dom": "^16.3.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",

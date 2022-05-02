@@ -28,7 +28,7 @@ class MembershipSerializer(serializers.ModelSerializer):
 
 
 class MemberSerializer(serializers.ModelSerializer):
-    membership_type = serializers.SlugRelatedField(slug_field='id',queryset=Membership.objects.all())
+    membership_type = serializers.SlugRelatedField(slug_field='name',queryset=Membership.objects.all())
 
     class Meta:
         model = Member

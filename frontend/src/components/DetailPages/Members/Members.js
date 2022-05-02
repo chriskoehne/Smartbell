@@ -11,7 +11,7 @@ import mainStyles from '../DetailPages.module.css';
 const Members = (props) => {
   const [members, setMembers] = useState([]);
   const [memberships, setMemberships] = useState([]);
-  const [display, setDisplay] = useState('post');
+  const [display, setDisplay] = useState('get');
 
   const [name, setName] = useState('');
   const [birthday, setBirthday] = useState(
@@ -58,7 +58,7 @@ const Members = (props) => {
         birthday: birthday,
         membership_type: membership,
       };
-      if (referredBy) {
+      if (referredBy && referredBy.length) {
         body.referred_by = referredBy[0].id;
       }
 
@@ -80,9 +80,9 @@ const Members = (props) => {
     }
   };
 
-  useEffect(() => {
-    console.log(membership);
-  }, [membership]);
+  // useEffect(() => {
+  //   console.log(memberships);
+  // }, [memberships]);
 
   useEffect(() => {
     const getData = async () => {
@@ -91,7 +91,7 @@ const Members = (props) => {
       setMembers(members);
       setMemberships(memberships);
       if (memberships.length) {
-        setMembership(memberships[0].id);
+        setMembership(memberships[0].name);
       }
     };
     getData();
@@ -137,7 +137,6 @@ const Members = (props) => {
             <Form
               onSubmit={(e) => {
                 e.preventDefault();
-                console.log('submitted');
                 createMember();
               }}
             >

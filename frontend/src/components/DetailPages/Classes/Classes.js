@@ -9,6 +9,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 import mainStyles from '../DetailPages.module.css';
+import styles from './Classes.module.css';
 
 const Classes = (props) => {
   const [gymClasses, setGymClasses] = useState([]);
@@ -18,16 +19,24 @@ const Classes = (props) => {
   const [instructor, setInstructor] = useState([]);
   const [cost, setCost] = useState('');
   const [datetime, setDatetime] = useState(moment(new Date()));
+  const [capacity, setCapacity] = useState(0);
 
   const [instructorEditing, setInstructorEditing] = useState([]);
   const [costEditing, setCostEditing] = useState('');
   const [datetimeEditing, setDatetimeEditing] = useState(moment(new Date()));
+  const [capacityEditing, setCapacityEditng] = useState(0);
   const [idEditing, setIdEditing] = useState('');
 
   const [viewingId, setViewingId] = useState('');
   const [viewingInstructor, setViewingInstructor] = useState('');
   const [viewingDate, setViewingDate] = useState('');
+  const [viewingCapacity, setViewingCapacity] = useState(0);
+
   const [attendance, setAttendance] = useState([]);
+
+  const [members, setMembers] = useState([]);
+
+  const [member, setMember] = useState([]);
 
   const editFormatter = (cell, row) => {
     return (
@@ -43,6 +52,7 @@ const Classes = (props) => {
           ]);
           setCostEditing(row.cost.slice(1));
           setDatetimeEditing(row.datetime);
+          setCapacityEditng(row.capacity);
           setIdEditing(row.id);
           setDisplay('put');
           // e.currentTarget.blur();
@@ -58,11 +68,12 @@ const Classes = (props) => {
       <Button
         // className='editBtn'
         onClick={(e) => {
-          console.log(row)
+          console.log(row);
           setDisplay('view');
           setViewingId(row.id);
-          setViewingInstructor(row.instructor.name)
-          setViewingDate(row.datetime)
+          setViewingCapacity(row.capacity);
+          setViewingInstructor(row.instructor.name);
+          setViewingDate(row.datetime);
           // e.currentTarget.blur();
         }}
       >
@@ -84,9 +95,25 @@ const Classes = (props) => {
     );
   };
 
+  const deleteFormatterAttendance = (cell, row) => {
+    return (
+      <Button
+        variant='danger'
+        // className='editBtn'
+        onClick={(e) => {
+          // console.log(row)
+          deleteGymClassAttendance(row.classId); // e.currentTarget.blur();
+        }}
+      >
+        Delete
+      </Button>
+    );
+  };
+
   const columns = [
     { text: 'Instructor', dataField: 'instructor.name', sort: true },
     { text: 'Cost', dataField: 'cost', sort: true },
+    { text: 'Capacity', dataField: 'capacity', sort: true },
     { text: 'Date & Time', dataField: 'datetime', sort: true },
     {
       text: 'View Attendance',
@@ -116,6 +143,13 @@ const Classes = (props) => {
     { text: 'Birthday', dataField: 'birthday', sort: true },
     { text: 'Membership', dataField: 'membership_type', sort: true },
     { text: 'Last Attended', dataField: 'last_attended', sort: true },
+    {
+      text: 'Delete',
+      dataField: 'delete',
+      isDummyField: true,
+      csvExport: false,
+      formatter: deleteFormatterAttendance,
+    },
   ];
 
   const getOptions = () => {
@@ -125,6 +159,20 @@ const Classes = (props) => {
         label: `${instructor.name} (${instructor.id})`,
         id: instructor.id,
       });
+    }
+    return options;
+  };
+
+  const getOptionsMembers = () => {
+    let options = [];
+    for (const member of members) {
+      const found = attendance.some((att) => att.id === member.id);
+      if (!found) {
+        options.push({
+          label: `${member.name} (${member.id})`,
+          id: member.id,
+        });
+      }
     }
     return options;
   };
@@ -143,6 +191,7 @@ const Classes = (props) => {
       const body = {
         instructor: instructor[0].id,
         cost: cost,
+        capacity: capacity,
         datetime: datetime.format('YYYY-MM-DDThh:mm'),
       };
       console.log(JSON.stringify(body));
@@ -165,11 +214,49 @@ const Classes = (props) => {
     }
   };
 
+  const idToGymClass = () => {
+    let found = gymClasses.find((cl) => (cl.id = viewingId));
+    found.instructor = found.instructor.id;
+    return found;
+  };
+
+  const idToMember = () => {
+    console.log(members.find((mem) => (mem.id = member[0].id)));
+    return members.find((mem) => (mem.id = member[0].id));
+  };
+
+  const addAttendance = async () => {
+    try {
+      const body = {
+        gym_class: viewingId,
+        member: member[0].id,
+      };
+      console.log(JSON.stringify(body));
+      const res = await axios.post('/attendance/', body);
+      if (res.status === 201) {
+        if (!alert('attendance created!')) {
+          window.location.reload();
+        }
+      } else {
+        if (!alert(res)) {
+          window.location.reload();
+        }
+      }
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+      if (!alert(err)) {
+        // window.location.reload();
+      }
+    }
+  };
+
   const updateGymClass = async () => {
     try {
       const body = {
         instructor: instructorEditing[0].id,
         cost: costEditing,
+        capacity: capacityEditing,
         datetime: datetimeEditing.format('YYYY-MM-DDThh:mm'),
       };
 
@@ -195,7 +282,6 @@ const Classes = (props) => {
   };
 
   const deleteGymClass = async (id) => {
-    console.log('here');
     try {
       const deleteRes = await axios.delete(`/gym_classes/${id}/`);
       if (deleteRes.status === 204) {
@@ -208,6 +294,18 @@ const Classes = (props) => {
     }
   };
 
+  const deleteGymClassAttendance = async (id) => {
+    try {
+      const deleteRes = await axios.delete(`/attendance/${id}/`);
+      if (deleteRes.status === 204) {
+        if (!alert(`attendance ${id} deleted`)) {
+          window.location.reload();
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const getGymClasses = async () => {
     const res = await axios.get('/gym_classes/');
     if (res.status === 200 && res.data.length) {
@@ -223,25 +321,43 @@ const Classes = (props) => {
   };
 
   const getAttendance = async () => {
+    console.log('here');
     const res = await axios.get('/attendance/', {
       params: { gym_class: viewingId },
     });
     if (res.status === 200 && res.data.length) {
-      let members = []
-      for (const obj of res.data) {
-        members.push(obj.member)
-      }
+      return res.data;
+    }
+  };
 
-      console.log(members);
-      return members;
+  const getFullAttendance = () => {
+    let attendaceFull = [];
+    console.log('members are');
+    console.log(members);
+    console.log('attendance is');
+    console.log(attendance);
+    for (const a of attendance) {
+      // a.gym_class = gymClasses.find(gc => gc.id = a.gym_class)
+      let found = members.find(mem => (mem.id === a.member));
+      found.classId = a.id
+      attendaceFull.push(found)
+    }
+    return attendaceFull;
+  };
+
+  const getMembers = async () => {
+    const membersRes = await axios.get('/members/');
+    if (membersRes.status === 200) {
+      return membersRes.data;
     }
   };
 
   useEffect(() => {
     const getData = async () => {
       if (viewingId) {
-        const res = await getAttendance()
-        setAttendance(res)
+        const res = await getAttendance();
+        console.log(res);
+        setAttendance(res);
       }
     };
     getData();
@@ -249,8 +365,9 @@ const Classes = (props) => {
 
   useEffect(() => {
     const getData = async () => {
-      const gymClassesRes = await getGymClasses();
+      const membersRes = await getMembers();
       const instructorsRes = await getInstructors();
+      const gymClassesRes = await getGymClasses();
       for (const gymClass of gymClassesRes) {
         gymClass.instructor = { id: gymClass.instructor };
         gymClass.instructor.name = instructorsRes.find(
@@ -259,9 +376,40 @@ const Classes = (props) => {
       }
       setGymClasses(gymClassesRes);
       setInstructors(instructorsRes);
+      setMembers(membersRes);
     };
     getData();
   }, [display]);
+
+  const showAdd = () => {
+    if (attendance && viewingCapacity && attendance.length < viewingCapacity) {
+      return (
+        <>
+          <div className={styles.addMember}>
+            <Typeahead
+              id='basic-typeahead-single'
+              onChange={setMember}
+              options={getOptionsMembers()}
+              placeholder='Choose a member...'
+              selected={member}
+            />
+          </div>
+          <div>
+            <Row className={mainStyles.submitHouse}>
+              <Button
+                className='btnCustom'
+                onClick={() => {
+                  addAttendance();
+                }}
+              >
+                Submit
+              </Button>
+            </Row>
+          </div>
+        </>
+      );
+    }
+  };
 
   const show = () => {
     if (display === 'get') {
@@ -343,6 +491,23 @@ const Classes = (props) => {
                   />
                 </Form.Group>
               </Row>
+              <Row>
+                <Col>
+                  <Form.Group className='mb-3' controlId='cost'>
+                    <Form.Label>Capacity</Form.Label>
+                    <Form.Control
+                      placeholder='Enter a capacity'
+                      type='number'
+                      value={capacity}
+                      onChange={(e) => {
+                        if (!isNaN(e.target.value)) {
+                          setCapacity(+parseInt(e.target.value));
+                        }
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
 
               <Row className={mainStyles.submitHouse}>
                 <Button className='btnCustom' type='submit'>
@@ -414,6 +579,23 @@ const Classes = (props) => {
                   />
                 </Form.Group>
               </Row>
+              <Row>
+                <Col>
+                  <Form.Group className='mb-3' controlId='cost'>
+                    <Form.Label>Capacity</Form.Label>
+                    <Form.Control
+                      placeholder='Enter a capacity'
+                      type='number'
+                      value={capacityEditing}
+                      onChange={(e) => {
+                        if (!isNaN(e.target.value)) {
+                          setCapacityEditng(+parseInt(e.target.value));
+                        }
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
 
               <Row className={mainStyles.submitHouse}>
                 <Button className='btnCustom' type='submit'>
@@ -424,14 +606,14 @@ const Classes = (props) => {
           </div>
         </>
       );
-    } else if (display === 'view') {
+    } else if (display === 'view' && attendance.length) {
       return (
         <>
           <div className={mainStyles.topper}>
             <div>
-            <h1>View Class Attendance</h1>
-            <h3>{viewingInstructor}</h3>
-            <h3>{viewingDate}</h3>
+              <h1>View Class Attendance</h1>
+              <h3>{viewingInstructor}</h3>
+              <h3>{viewingDate}</h3>
             </div>
             <Button
               className='btnCustom'
@@ -443,8 +625,13 @@ const Classes = (props) => {
               View Classes
             </Button>
           </div>
+          {showAdd()}
           <div className={mainStyles.tableHouse}>
-            <BootstrapTable columns={viewColumns} data={attendance} keyField='id' />
+            <BootstrapTable
+              columns={viewColumns}
+              data={getFullAttendance()}
+              keyField='id'
+            />
           </div>
         </>
       );

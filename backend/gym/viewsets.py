@@ -62,7 +62,7 @@ class GymClassAttendanceViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         """
         Optionally restricts the returned purchases to a given user,
-        by filtering against a `username` query parameter in the URL.
+        by filtering against a `gym_class` query parameter in the URL.
         """
         queryset = GymClassAttendance.objects.all()
         gym_class = self.request.query_params.get('gym_class')

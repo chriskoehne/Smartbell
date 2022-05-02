@@ -16,9 +16,8 @@ class Membership(models.Model):
         MONTHLY = 'M', _('Monthly')
         YEARLY = 'Y', _('Yearly')
 
-
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255 ,unique=True)
+    name = models.CharField(max_length=255, unique=True)
     cost = MoneyField(max_digits=6, decimal_places=2, default_currency='USD')
     payment_periods = models.CharField(
         max_length=1,
@@ -29,6 +28,7 @@ class Membership(models.Model):
 
     def _str_(self):
         return self.name
+
     def __str__(self):
         return self.name
 
@@ -66,7 +66,6 @@ class Equipment(models.Model):
         HEAVILY_USED = 2, _('Heavily Used')
         NEEDS_SERVICE = 3, _('Needs Repair')
         SERVICING = 4, _('Servicing')
-
 
     name = models.CharField(max_length=255)
     status = models.IntegerField(

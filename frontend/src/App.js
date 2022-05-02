@@ -12,8 +12,6 @@ const App = () => {
   return (
     <Routes>
       <Route path='/' element={<Navigate replace to='/dashboard' />} />
-      {/* <Route exact path='/dashboard' element={<Dashboard />} /> */}
-
       <Route exact path='/dashboard' element={<NavRoute />}>
         <Route index element={<Dashboard />} />
       </Route>

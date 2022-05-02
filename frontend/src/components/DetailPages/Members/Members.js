@@ -142,7 +142,7 @@ const Members = (props) => {
             >
               <Row>
                 <Col>
-                  <Form.Group className='mb-3' controlId='formBasicEmail'>
+                  <Form.Group className='mb-3' controlId='name'>
                     <Form.Label>Name</Form.Label>
                     <Form.Control
                       type='name'
@@ -155,7 +155,7 @@ const Members = (props) => {
                   </Form.Group>
                 </Col>
                 <Col>
-                  <Form.Group className='mb-3' controlId='formBasicEmail'>
+                  <Form.Group className='mb-3' controlId='membership'>
                     <Form.Label>Membership</Form.Label>
                     <Form.Select
                       aria-label='Default select example'
@@ -175,7 +175,7 @@ const Members = (props) => {
               </Row>
               <Row>
                 <Col>
-                  <Form.Group className='mb-3' controlId='formBasicEmail'>
+                  <Form.Group className='mb-3' controlId='birthday'>
                     <Form.Label>Birthday</Form.Label>
                     <Form.Control
                       type='date'
@@ -187,8 +187,8 @@ const Members = (props) => {
                   </Form.Group>
                 </Col>
                 <Col>
-                  <Form.Group>
-                    <Form.Label>Single Selection</Form.Label>
+                  <Form.Group className='mb-3' controlId='referral'>
+                    <Form.Label>Referred By</Form.Label>
                     <Typeahead
                       id='basic-typeahead-single'
                       onChange={setReferredBy}

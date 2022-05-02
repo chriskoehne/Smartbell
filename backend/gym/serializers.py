@@ -21,21 +21,19 @@ class UserSerializer(serializers.ModelSerializer):
 
 class MembershipSerializer(serializers.ModelSerializer):
     cost = serializers.CharField()
-
     class Meta:
         model = Membership
         fields = ['id', 'name', 'cost', 'payment_periods', 'benefits']
 
 
 class MemberSerializer(serializers.ModelSerializer):
-    membership_type = serializers.SlugRelatedField(slug_field='name',queryset=Membership.objects.all())
+    membership_type = serializers.SlugRelatedField(
+        slug_field='name', queryset=Membership.objects.all())
 
     class Meta:
         model = Member
         fields = ['id', 'name', 'birthday', 'membership_type', 'good_payment_standing',
                   'last_attended', 'referrals']
-
-    
 
 
 class EquipmentSerializer(serializers.ModelSerializer):

@@ -34,7 +34,7 @@ cursor.execute("INSERT INTO member (member_id, name, birthday, membership, payme
 
 # Membership Option Table
 cursor.execute("CREATE TABLE IF NOT EXISTS membership (membership_id integer primary key, membership_plan_name varchar(255), cost integer, payment_period varchar(255), benefits varchar(255));")
-cursor.execute("INSERT INTO membership (membership_id, membership_plan_name, cost, payment_period, benefits) VALUES (\'1\', \'platinum\', \'100\', \'monthly\', \'all amenities, 2 weekly guest passes, and 24\7 access\');")
+cursor.execute("INSERT INTO membership (membership_id, membership_plan_name, cost, payment_period, benefits) VALUES (\'1\', \'platinum\', \'100\', \'monthly\', \'all amenities, 2 weekly guest passes, and 24\\7 access\');")
 cursor.execute("INSERT INTO membership (membership_id, membership_plan_name, cost, payment_period, benefits) VALUES (\'2\', \'gold\', \'50\', \'monthly\', \'partial amenities, 1 weekly guest pass and access until 3 am\');")
 cursor.execute("INSERT INTO membership (membership_id, membership_plan_name, cost, payment_period, benefits) VALUES (\'3\', \'silver\', \'40\', \'monthly\', \'partial amenities, access until 12am\');")
 cursor.execute("INSERT INTO membership (membership_id, membership_plan_name, cost, payment_period, benefits) VALUES (\'4\', \'regular\', \'25\', \'monthly\', \'normal access\');")

@@ -53,12 +53,15 @@ class GymClassSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GymClass
-        fields = ['id', 'instructor', 'datetime', 'cost']
+        fields = ['id', 'instructor', 'datetime', 'cost', 'capacity']
 
 
 class GymClassAttendanceSerializer(serializers.ModelSerializer):
-    gym_class = GymClassSerializer(read_only=True)
-    member = MemberSerializer(read_only=True)
+    # gym_class = GymClassSerializer(read_only=True)
+    # member = MemberSerializer(read_only=True)
+
+    # gym_class_id = serializers.SlugRelatedField(queryset=GymClassAttendance.objects.all(), many=True, slug_field='gym_class', write_only=True)
+    # member_id = serializers.SlugRelatedField(queryset=GymClassAttendance.objects.all(),  many=True, slug_field='member', write_only=True)
     class Meta:
         model = GymClassAttendance
-        fields = ['gym_class', 'member']
+        fields = ['id', 'gym_class', 'member']

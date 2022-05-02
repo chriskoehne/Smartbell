@@ -90,6 +90,7 @@ class GymClass(models.Model):
     instructor = models.ForeignKey(Employee, on_delete=models.CASCADE)
     datetime = models.DateTimeField()
     cost = MoneyField(max_digits=6, decimal_places=2, default_currency='USD')
+    capacity = models.IntegerField(default=20)
 
     def _str_(self):
         return self.instructor + ' | ' + self.datetime + ' | ' + self.cost
@@ -99,6 +100,9 @@ class GymClassAttendance(models.Model):
 
     gym_class = models.ForeignKey(GymClass, on_delete=models.CASCADE, db_index=True,)
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (("gym_class", "member"),)  
 
     def _str_(self):
         return self.session + ' | ' + self.member

@@ -5,6 +5,7 @@ from .serializers import *
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import F
+from django_prepared_query import PreparedManager
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -23,6 +24,7 @@ class MemberViewSet(viewsets.ModelViewSet):
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
+        print("here here here here here")
         print(request.data)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -43,7 +45,14 @@ class MembershipViewSet(viewsets.ModelViewSet):
 
 
 class EquipmentViewSet(viewsets.ModelViewSet):
-    queryset = Equipment.objects.all()
+    def get_queryset(self):
+        if self.request.query_params.get('prepared') == "no":
+            queryset = Equipment.objects.raw('SELECT * FROM gym_equipment')
+        else:
+            queryset = Equipment.objects.raw('SELECT * FROM gym_equipment WHERE name="bench press"')
+        return queryset
+    
+    queryset = GymClassAttendance.objects.all()
     serializer_class = EquipmentSerializer
 
 

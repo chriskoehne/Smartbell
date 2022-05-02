@@ -26,6 +26,7 @@ class MemberViewSet(viewsets.ModelViewSet):
         print(request.data)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        print('here')
         serializer.save()
 
         if 'referred_by' in request.data:

@@ -39,7 +39,7 @@ class MemberSerializer(serializers.ModelSerializer):
 class EquipmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Equipment
-        fields = ['name', 'status', 'notes']
+        fields = ['id', 'name', 'status', 'notes']
 
 
 class ServiceHistSerializer(serializers.ModelSerializer):

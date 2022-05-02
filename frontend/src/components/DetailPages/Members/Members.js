@@ -17,8 +17,47 @@ const Members = (props) => {
   const [birthday, setBirthday] = useState(
     moment(new Date()).format('yyyy-MM-DD')
   );
-  const [membership, setMembership] = useState(-1);
+  const [membership, setMembership] = useState('');
   const [referredBy, setReferredBy] = useState([]);
+
+  const [nameEditing, setNameEditing] = useState('');
+  const [birthdayEditing, setBirthdayEditing] = useState('');
+  const [membershipEditing, setMembershipEditing] = useState('');
+  const [paymentEditing, setPaymentEditing] = useState('');
+  const [idEditing, setIdEditing] = useState(-1);
+
+  const editFormatter = (cell, row) => {
+    return (
+      <Button
+        // className='editBtn'
+        onClick={(e) => {
+          console.log(row);
+          setNameEditing(row.name);
+          setBirthdayEditing(row.birthday);
+          setMembershipEditing(row.membership_type);
+          setPaymentEditing(row.good_payment_standing);
+          setIdEditing(row.id);
+          setDisplay('put');
+          // e.currentTarget.blur();
+        }}
+      >
+        Edit
+      </Button>
+    );
+  };
+  const deleteFormatter = (cell, row) => {
+    return (
+      <Button
+        variant='danger'
+        // className='editBtn'
+        onClick={(e) => {
+          deleteMember(row.id); // e.currentTarget.blur();
+        }}
+      >
+        Delete
+      </Button>
+    );
+  };
 
   const columns = [
     { text: 'Name', dataField: 'name', sort: true },
@@ -27,6 +66,20 @@ const Members = (props) => {
     { text: 'Good Standing', dataField: 'good_payment_standing', sort: true },
     { text: 'Last Attended', dataField: 'last_attended', sort: true },
     { text: 'Referrals', dataField: 'referrals', sort: true },
+    {
+      text: 'Edit',
+      dataField: 'edit',
+      isDummyField: true,
+      csvExport: false,
+      formatter: editFormatter,
+    },
+    {
+      text: 'Delete',
+      dataField: 'delete',
+      isDummyField: true,
+      csvExport: false,
+      formatter: deleteFormatter,
+    },
   ];
 
   const getMembers = async () => {
@@ -77,6 +130,47 @@ const Members = (props) => {
       if (!alert(err)) {
         window.location.reload();
       }
+    }
+  };
+
+  const updateMember = async () => {
+    try {
+      const body = {
+        name: nameEditing,
+        birthday: birthdayEditing,
+        membership_type: membershipEditing,
+        good_payment_standing: paymentEditing,
+      };
+
+      const res = await axios.put(`/members/${idEditing}/`, body);
+      if (res.status === 200) {
+        if (!alert(`member ${idEditing} updated!`)) {
+          window.location.reload();
+        }
+      } else {
+        if (!alert(res)) {
+          window.location.reload();
+        }
+      }
+      console.log(res);
+    } catch (err) {
+      if (!alert(err)) {
+        window.location.reload();
+      }
+    }
+  };
+
+  const deleteMember = async (id) => {
+    console.log('here');
+    try {
+      const deleteRes = await axios.delete(`/members/${id}/`);
+      if (deleteRes.status === 204) {
+        if (!alert(`member ${id} deleted`)) {
+          window.location.reload();
+        }
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -165,7 +259,7 @@ const Members = (props) => {
                       }}
                     >
                       {memberships.map((mem) => (
-                        <option key={mem.id} value={mem.id}>
+                        <option key={mem.id} value={mem.name}>
                           {mem.name}
                         </option>
                       ))}
@@ -196,6 +290,104 @@ const Members = (props) => {
                       placeholder='Choose a member...'
                       selected={referredBy}
                     />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row className={mainStyles.submitHouse}>
+                <Button className='btnCustom' type='submit'>
+                  Submit
+                </Button>
+              </Row>
+            </Form>
+          </div>
+        </>
+      );
+    } else if (display === 'put') {
+      return (
+        <>
+          <div className={mainStyles.topper}>
+            <h1>Edit Member</h1>
+            <Button
+              className='btnCustom'
+              onClick={(e) => {
+                setDisplay('get');
+                e.currentTarget.blur();
+              }}
+            >
+              View Members
+            </Button>
+          </div>
+          <div style={{ margin: '5%' }}>
+            <Form
+              onSubmit={(e) => {
+                e.preventDefault();
+                updateMember();
+              }}
+            >
+              <Row>
+                <Col>
+                  <Form.Group className='mb-3' controlId='name'>
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control
+                      type='name'
+                      placeholder='Enter name'
+                      value={nameEditing}
+                      onChange={(e) => {
+                        setNameEditing(e.target.value);
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className='mb-3' controlId='membership'>
+                    <Form.Label>Membership</Form.Label>
+                    <Form.Select
+                      aria-label='Default select example'
+                      onChange={(e) => {
+                        setMembershipEditing(e.target.value);
+                        console.log(membershipEditing);
+                      }}
+                    >
+                      {memberships.map((mem) => (
+                        <option key={mem.id} value={mem.name}>
+                          {mem.name}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group className='mb-3' controlId='birthday'>
+                    <Form.Label>Birthday</Form.Label>
+                    <Form.Control
+                      type='date'
+                      value={birthdayEditing}
+                      onChange={(e) => {
+                        setBirthdayEditing(e.target.value);
+                      }}
+                    ></Form.Control>
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className='mb-3' controlId='membership'>
+                    <Form.Label>Good Payment Standing?</Form.Label>
+                    <Form.Select
+                      aria-label='Default select example'
+                      value={paymentEditing}
+                      onChange={(e) => {
+                        setPaymentEditing(e.target.value);
+                        console.log(e.target.value);
+                      }}
+                    >
+                      <option key={1} value={true}>
+                        True
+                      </option>
+                      <option key={0} value={false}>
+                        False
+                      </option>
+                    </Form.Select>
                   </Form.Group>
                 </Col>
               </Row>

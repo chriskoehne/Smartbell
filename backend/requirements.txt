@@ -10,6 +10,7 @@ djangorestframework==3.13.1
 localflavor==1.9
 mysqlclient==2.1.0
 py-moneyed==1.2
+PyMySQL==1.0.2
 python-stdnum==1.17
 pytz==2022.1
 six==1.16.0

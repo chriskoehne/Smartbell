@@ -11,6 +11,7 @@ const Dashboard = (props) => {
         <DashboardCard name='equipment'/>
         <DashboardCard name='classes'/>
         <DashboardCard name='memberships'/>
+
       </Row>
     </div>
   );

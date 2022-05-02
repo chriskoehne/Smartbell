@@ -9,9 +9,8 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 import mainStyles from '../DetailPages.module.css';
 
 const Equipment = (props) => {
-  
   const [equipment, setEquipment] = useState('');
-  const [display, setDisplay] = useState('post');
+  const [display, setDisplay] = useState('get');
 
   const [name, setName] = useState('');
   const [notes, setNotes] = useState('');
@@ -52,7 +51,6 @@ const Equipment = (props) => {
     );
   };
 
-
   const columns = [
     { text: 'Machine Name', dataField: 'name', sort: true },
     { text: 'Employee Notes', dataField: 'notes', sort: true },
@@ -70,7 +68,7 @@ const Equipment = (props) => {
       isDummyField: true,
       csvExport: false,
       formatter: deleteFormatter,
-    }
+    },
   ];
 
   const getEquipment = async () => {
@@ -78,7 +76,7 @@ const Equipment = (props) => {
     if (equipmentRes.status === 200) {
       return equipmentRes.data;
     }
-  }
+  };
 
   const createEquipment = async () => {
     try {
@@ -110,10 +108,10 @@ const Equipment = (props) => {
       const body = {
         name: nameEditing,
         status: statusEditing,
-        notes: notesEditing
+        notes: notesEditing,
       };
 
-      console.log("ID editing is: " + idEditing);
+      console.log('ID editing is: ' + idEditing);
       const res = await axios.put(`/equipment/${idEditing}/`, body);
       if (res.status === 200) {
         if (!alert(`Equipment ${idEditing} updated!`)) {
@@ -157,7 +155,6 @@ const Equipment = (props) => {
     };
     getData();
   }, [display]);
-
 
   const show = () => {
     if (display === 'get') {
@@ -206,12 +203,12 @@ const Equipment = (props) => {
                 <Form.Group className='mb-3' controlId='formBasicEmail'>
                   <Form.Label>Machine Name</Form.Label>
                   <Form.Control
-                  type='name'
-                  placeholder='Enter machine name' 
-                  value={name}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                  }}
+                    type='name'
+                    placeholder='Enter machine name'
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                    }}
                   />
                 </Form.Group>
               </Row>
@@ -219,10 +216,10 @@ const Equipment = (props) => {
                 <Form.Group className='mb-3' controlId='formBasicEmail'>
                   <Form.Label>Employee Notes</Form.Label>
                   <Form.Control
-                  placeholder='Enter notes'
-                  onChange={(e) => {
-                    setNotes(e.target.value);
-                  }}
+                    placeholder='Enter notes'
+                    onChange={(e) => {
+                      setNotes(e.target.value);
+                    }}
                   />
                 </Form.Group>
               </Row>
@@ -230,11 +227,11 @@ const Equipment = (props) => {
                 <Form.Group className='mb-3' controlId='formBasicEmail'>
                   <Form.Label>Quality Status</Form.Label>
                   <Form.Control
-                  placeholder='Enter quality status'
-                  onChange={(e) => {
-                    setStatus(e.target.value);
-                  }}
-                   />
+                    placeholder='Enter quality status'
+                    onChange={(e) => {
+                      setStatus(e.target.value);
+                    }}
+                  />
                 </Form.Group>
               </Row>
               <Row className={mainStyles.submitHouse}>
@@ -317,9 +314,9 @@ const Equipment = (props) => {
             </Form>
           </div>
         </>
-       );
-      }
-    };
-    return <div className={mainStyles.box}>{show()}</div>;
+      );
+    }
   };
-  export default Equipment;
+  return <div className={mainStyles.box}>{show()}</div>;
+};
+export default Equipment;

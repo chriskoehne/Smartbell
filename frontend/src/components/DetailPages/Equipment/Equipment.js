@@ -72,7 +72,10 @@ const Equipment = (props) => {
   ];
 
   const getEquipment = async () => {
-    const equipmentRes = await axios.get('/equipment/');
+    const equipmentRes = await axios.get('/equipment/', {
+      params: { prepared: "yes" },
+    });
+    
     if (equipmentRes.status === 200) {
       return equipmentRes.data;
     }
@@ -158,6 +161,7 @@ const Equipment = (props) => {
 
   const show = () => {
     if (display === 'get') {
+      // VIEW EQUIPMENT PAGE
       return (
         <>
           <div className={mainStyles.topper}>
@@ -172,12 +176,76 @@ const Equipment = (props) => {
               Add Equipment
             </Button>
           </div>
+
+          {/* FORMERLY THE EDIT CODE: */}
+
+          <div className={mainStyles.topper}>
+            <h1>Query Equipment</h1>
+            
+          </div>
+          <div style={{ margin: '5%' }}>
+            <Form
+              onSubmit={(e) => {
+                e.preventDefault();
+                updateEquipment();
+              }}
+            >
+              <Row>
+                <Col>
+                  <Form.Group className='mb-3' controlId='name'>
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control
+                      type='name'
+                      placeholder='Enter name'
+                      value={nameEditing}
+                      onChange={(e) => {
+                        setNameEditing(e.target.value);
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className='mb-3' controlId='name'>
+                    <Form.Label>Status</Form.Label>
+                    <Form.Control
+                      type='name'
+                      placeholder='Enter status'
+                      value={statusEditing}
+                      onChange={(e) => {
+                        setStatusEditing(e.target.value);
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className='mb-3' controlId='name'>
+                    <Form.Label>Notes</Form.Label>
+                    <Form.Control
+                      type='name'
+                      placeholder='Enter status'
+                      value={notesEditing}
+                      onChange={(e) => {
+                        setNotesEditing(e.target.value);
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row className={mainStyles.submitHouse}>
+                <Button className='btnCustom' type='submit'>
+                  Submit
+                </Button>
+              </Row>
+            </Form>
+
+          </div>
           <div className={mainStyles.tableHouse}>
             <BootstrapTable columns={columns} data={equipment} keyField='id' />
           </div>
         </>
       );
     } else if (display === 'post') {
+      // ADD EQUIPMENT PAGE
       return (
         <>
           <div className={mainStyles.topper}>
@@ -244,6 +312,7 @@ const Equipment = (props) => {
         </>
       );
     } else if (display === 'put') {
+      // EDIT EQUIPMENT PAGE
       return (
         <>
           <div className={mainStyles.topper}>

@@ -22,6 +22,7 @@ const Members = (props) => {
 
   const [nameEditing, setNameEditing] = useState('');
   const [birthdayEditing, setBirthdayEditing] = useState('');
+  const [referralEditing, setReferralEditing] = useState('');
   const [membershipEditing, setMembershipEditing] = useState('');
   const [paymentEditing, setPaymentEditing] = useState('');
   const [idEditing, setIdEditing] = useState(-1);
@@ -210,6 +211,101 @@ const Members = (props) => {
           <div className={mainStyles.tableHouse}>
             <BootstrapTable columns={columns} data={members} keyField='id' />
           </div>
+          <div className={mainStyles.topper}>
+            <h1>Query Members</h1>
+          </div>
+          <div style={{ margin: '5%' }}>
+            <Form
+              onSubmit={ async (e) => {
+                e.preventDefault();
+                const res = await axios.get('/members/', {
+                  params: {name: nameEditing , 
+                    membership_type: membershipEditing, 
+                    referrals: referralEditing, 
+                    good_payment_standing: paymentEditing,
+                  }
+                });
+                if (res.status === 200) {
+                  console.log(res.data);
+                  setMembers(res.data);
+                }
+        
+              }}
+            >
+              <Row>
+                <Col>
+                  <Form.Group className='mb-3' controlId='name'>
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control
+                      type='name'
+                      placeholder='Enter name'
+                      value={nameEditing}
+                      onChange={(e) => {
+                        setNameEditing(e.target.value);
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className='mb-3' controlId='membership'>
+                    <Form.Label>Membership</Form.Label>
+                    <Form.Select
+                      aria-label='Default select example'
+                      onChange={(e) => {
+                        setMembershipEditing(e.target.value);
+                        console.log(membershipEditing);
+                      }}
+                    >
+                      {memberships.map((mem) => (
+                        <option key={mem.id} value={mem.id}>
+                          {mem.name}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group className='mb-3' controlId='referrals'>
+                    <Form.Label>Referrals</Form.Label>
+                    <Form.Control
+                      type='referrals'
+                      value={referralEditing}
+                      onChange={(e) => {
+                        setReferralEditing(e.target.value);
+                      }}
+                    ></Form.Control>
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className='mb-3' controlId='membership'>
+                    <Form.Label>Good Payment Standing?</Form.Label>
+                    <Form.Select
+                      aria-label='Default select example'
+                      value={paymentEditing}
+                      onChange={(e) => {
+                        setPaymentEditing(e.target.value);
+                        console.log(e.target.value);
+                      }}
+                    >
+                      <option key={1} value={1}>
+                        True
+                      </option>
+                      <option key={0} value={0}>
+                        False
+                      </option>
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row className={mainStyles.submitHouse}>
+                <Button className='btnCustom' type='submit'>
+                  Submit
+                </Button>
+              </Row>
+            </Form>
+          </div>
         </>
       );
     } else if (display === 'post') {
@@ -359,7 +455,7 @@ const Members = (props) => {
               </Row>
               <Row>
                 <Col>
-                  <Form.Group className='mb-3' controlId='birthday'>
+                  <Form.Group className='mb-3' controlId='referrals'>
                     <Form.Label>Birthday</Form.Label>
                     <Form.Control
                       type='date'

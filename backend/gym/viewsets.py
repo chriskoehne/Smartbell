@@ -5,8 +5,7 @@ from .serializers import *
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import F
-from django_prepared_query import PreparedManager
-
+from django.db.models.expressions import RawSQL
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -37,6 +36,35 @@ class MemberViewSet(viewsets.ModelViewSet):
             print('referred is')
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def get_queryset(self):
+        print(self.request.query_params)
+        if self.request.query_params:
+            statement = "SELECT * FROM gym_member WHERE "
+            name = self.request.query_params.get("name")
+            membership_type = self.request.query_params.get("membership_type")
+            referrals = self.request.query_params.get("referrals")
+            payment = self.request.query_params.get("good_payment_standing")
+            alreadyAdded = False
+            if name:
+                statement += "name = \"" + name + "\""
+                alreadyAdded = True
+            if referrals:
+                if alreadyAdded: statement += " AND "   
+                statement += "referrals = \"" + referrals + "\""
+                alreadyAdded = True
+            if membership_type:
+                if alreadyAdded: statement += " AND "
+                statement += "membership_type_id = \"" + membership_type + "\""
+                alreadyAdded = True
+            if payment:
+                if alreadyAdded: statement += " AND "
+                statement += "good_payment_standing = \"" + payment + "\""
+            print(statement)
+            queryset = Member.objects.raw(statement)
+        else:
+            queryset = Member.objects.raw('SELECT * FROM gym_member')
+        return queryset
 
 
 class MembershipViewSet(viewsets.ModelViewSet):
@@ -73,7 +101,7 @@ class EquipmentViewSet(viewsets.ModelViewSet):
 
         queryset = Equipment.objects.raw(queryString)
         return queryset
-
+    
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
 

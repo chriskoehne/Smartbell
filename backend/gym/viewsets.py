@@ -73,11 +73,33 @@ class MembershipViewSet(viewsets.ModelViewSet):
 
 
 class EquipmentViewSet(viewsets.ModelViewSet):
+
     def get_queryset(self):
-        if self.request.query_params.get('prepared') == "no":
-            queryset = Equipment.objects.raw('SELECT * FROM gym_equipment')
-        else:
-            queryset = Equipment.objects.raw('SELECT * FROM gym_equipment')
+        queryString = "SELECT * from gym_equipment"
+        
+        paramsAdded = 0
+        # firstParamAdded = 0
+
+        if self.request.query_params.get('name'):
+            
+            queryString = queryString + " WHERE name=\'" + self.request.query_params.get('name') + "\'"
+            paramsAdded = paramsAdded + 1
+
+        if self.request.query_params.get('status'):
+            if paramsAdded > 0:
+                queryString = queryString + " AND status=\'" + self.request.query_params.get('status') + "\'"
+            else:
+                queryString = queryString + " WHERE status=\'" + self.request.query_params.get('status') + "\'"
+            paramsAdded = paramsAdded + 1
+        
+        if self.request.query_params.get('notes'):
+            if paramsAdded > 0:
+                queryString = queryString + " AND notes=\'" + self.request.query_params.get('notes') + "\'"
+            else:
+                queryString = queryString + " WHERE notes=\'" + self.request.query_params.get('notes') + "\'"
+            paramsAdded = paramsAdded + 1
+
+        queryset = Equipment.objects.raw(queryString)
         return queryset
     
     queryset = Equipment.objects.all()
@@ -95,17 +117,5 @@ class GymClassViewset(viewsets.ModelViewSet):
 
 
 class GymClassAttendanceViewset(viewsets.ModelViewSet):
-
-    def get_queryset(self):
-        """
-        Optionally restricts the returned purchases to a given user,
-        by filtering against a `username` query parameter in the URL.
-        """
-        queryset = GymClassAttendance.objects.all()
-        gym_class = self.request.query_params.get('gym_class')
-        if gym_class is not None:
-            queryset = queryset.filter(gym_class=gym_class)
-        return queryset
-
     queryset = GymClassAttendance.objects.all()
     serializer_class = GymClassAttendanceSerializer

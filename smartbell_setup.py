@@ -52,6 +52,14 @@ cursor.execute("INSERT INTO equipment (equipment_id, machine_name, notes, qualit
 cursor.execute("INSERT INTO equipment (equipment_id, machine_name, notes, quality_status) VALUES (\'3\', \'shoulder press\', \'no notes\', \'lightly used\');")
 cursor.execute("INSERT INTO equipment (equipment_id, machine_name, notes, quality_status) VALUES (\'4\', \'45 degree leg press\', \'no notes\', \'heavily used\');")
 
+
+
+
+# INSERT INTO gym_equipment (id, name, status, notes) VALUES (1, 'bench press', 1, 'no notes');
+# INSERT INTO gym_equipment (id, name, status, notes) VALUES (2, 'bench press', 1, 'no notes');
+# INSERT INTO gym_equipment (id, name, status, notes) VALUES (3, 'shoulder press', 4, 'no notes');
+# INSERT INTO gym_equipment (id, name, status, notes) VALUES (4, '45 degree leg press', 6, 'no notes');
+
 # # Service History Table
 cursor.execute("CREATE TABLE IF NOT EXISTS service (equipment_id integer, employee_id integer, notes varchar(255), date varchar(255));")
 cursor.execute("INSERT INTO service (equipment_id, employee_id, notes, date) VALUES (\'4\', \'3123\', \'Soiled seat replaced\', \'02-05-2019\');")

@@ -13,27 +13,35 @@ const Equipment = (props) => {
   const [equipment, setEquipment] = useState([]);
   const [display, setDisplay] = useState('post');
 
-  const [equipmentId, setEquipmentId] = useState('');
-  const [machineName, setMachineName] = useState('');
+  const [name, setName] = useState('');
   const [notes, setNotes] = useState('');
-  const [qualityStatus, setQualityStatus] = useState('');
+  const [status, setStatus] = useState('');
 
   const columns = [
-    { text: 'EquipmentID', dataField: 'equipment_id', sort: true },
-    { text: 'Machine Name', dataField: 'machine_name', sort: true },
+    { text: 'Machine Name', dataField: 'name', sort: true },
     { text: 'Employee Notes', dataField: 'notes', sort: true },
-    { text: 'Quality Status', dataField: 'quality_status', sort: true }
+    { text: 'Quality Status', dataField: 'status', sort: true }
   ];
+
+  const getEquipment = async () => {
+    const equipmentRes = await axios.get('/equipment/');
+    if (equipmentRes.status === 200) {
+      return equipmentRes.data;
+    }
+  }
+
+
+  useEffect(() => {
+    console.log(equipment);
+  }, [equipment]);
 
   useEffect(() => {
     const getData = async () => {
-      const equipmentRes = await axios.get('/equipment/');
-      if (equipmentRes.status == 200) {
-        setEquipment(equipmentRes.data);
-      }
+      const equipment = await getEquipment();
+      setEquipment(equipment);
     };
     getData();
-  }, []);
+  }, [display]);
 
 
   const show = () => {

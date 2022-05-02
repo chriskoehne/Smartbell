@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import CurrencyInput from 'react-currency-input-field';
 import { Button, Form, Row, Col } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import axios from 'axios';

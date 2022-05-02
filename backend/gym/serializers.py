@@ -10,7 +10,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Employee
-        fields = ['name', 'hire_date', 'wage', 'ssn']
+        fields = ['id', 'name', 'hire_date', 'wage']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -53,10 +53,12 @@ class GymClassSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GymClass
-        fields = ['instructor', 'datetime', 'cost']
+        fields = ['id', 'instructor', 'datetime', 'cost']
 
 
 class GymClassAttendanceSerializer(serializers.ModelSerializer):
+    gym_class = GymClassSerializer(read_only=True)
+    member = MemberSerializer(read_only=True)
     class Meta:
         model = GymClassAttendance
         fields = ['gym_class', 'member']

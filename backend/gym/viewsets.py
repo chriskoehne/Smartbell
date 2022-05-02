@@ -58,5 +58,17 @@ class GymClassViewset(viewsets.ModelViewSet):
 
 
 class GymClassAttendanceViewset(viewsets.ModelViewSet):
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = GymClassAttendance.objects.all()
+        gym_class = self.request.query_params.get('gym_class')
+        if gym_class is not None:
+            queryset = queryset.filter(gym_class=gym_class)
+        return queryset
+
     queryset = GymClassAttendance.objects.all()
     serializer_class = GymClassAttendanceSerializer

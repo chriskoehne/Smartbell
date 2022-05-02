@@ -1,6 +1,5 @@
 from datetime import date
 from django.db import models
-from localflavor.us.models import USSocialSecurityNumberField
 from djmoney.models.fields import MoneyField
 from django.utils.translation import gettext_lazy as _
 
@@ -51,8 +50,6 @@ class Employee(models.Model):
     name = models.CharField(max_length=255)
     hire_date = models.DateField()
     wage = MoneyField(max_digits=6, decimal_places=2, default_currency='USD')
-    ssn = USSocialSecurityNumberField()
-    hire_date = models.DateField(default=date.today)
 
     def _str_(self):
         return self.name
@@ -100,8 +97,8 @@ class GymClass(models.Model):
 
 class GymClassAttendance(models.Model):
 
-    gym_class = models.ForeignKey(GymClass, on_delete=models.PROTECT)
-    member = models.ForeignKey(Employee, on_delete=models.PROTECT)
+    gym_class = models.ForeignKey(GymClass, on_delete=models.CASCADE, db_index=True,)
+    member = models.ForeignKey(Member, on_delete=models.CASCADE)
 
     def _str_(self):
         return self.session + ' | ' + self.member

@@ -23,6 +23,8 @@ const Members = (props) => {
   const [nameEditing, setNameEditing] = useState('');
   const [birthdayEditing, setBirthdayEditing] = useState('');
   const [referralEditing, setReferralEditing] = useState('');
+  const [startDateEditing, setStartDateEditing] = useState('')
+  const [endDateEditing, setEndDateEditing] = useState('')
   const [membershipEditing, setMembershipEditing] = useState('');
   const [paymentEditing, setPaymentEditing] = useState('');
   const [idEditing, setIdEditing] = useState(-1);
@@ -223,6 +225,8 @@ const Members = (props) => {
                     membership_type: membershipEditing, 
                     referrals: referralEditing, 
                     good_payment_standing: paymentEditing,
+                    startDate: startDateEditing,
+                    endDate: endDateEditing,
                   }
                 });
                 if (res.status === 200) {
@@ -296,6 +300,32 @@ const Members = (props) => {
                         False
                       </option>
                     </Form.Select>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+              <Col>
+                  <Form.Group className='mb-3' controlId='birthday'>
+                    <Form.Label>Start Date</Form.Label>
+                    <Form.Control
+                      type='date'
+                      value={startDateEditing}
+                      onChange={(e) => {
+                        setStartDateEditing(e.target.value);
+                      }}
+                    ></Form.Control>
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className='mb-3' controlId='birthday'>
+                    <Form.Label>End Date</Form.Label>
+                    <Form.Control
+                      type='date'
+                      value={endDateEditing}
+                      onChange={(e) => {
+                        setEndDateEditing(e.target.value);
+                      }}
+                    ></Form.Control>
                   </Form.Group>
                 </Col>
               </Row>

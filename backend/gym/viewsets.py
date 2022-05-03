@@ -39,15 +39,25 @@ class MemberViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         print(self.request.query_params)
-        if self.request.query_params:
+        paramExists = False
+        for param in self.request.query_params:
+            if self.request.query_params[param]:
+                if param != "startDate" and param != "endDate":
+                    paramExists = True
+        if self.request.query_params.get("startDate") and self.request.query_params.get("endDate"):
+            paramExists = True
+
+        if paramExists:
             statement = "SELECT * FROM gym_member WHERE "
             name = self.request.query_params.get("name")
             membership_type = self.request.query_params.get("membership_type")
             referrals = self.request.query_params.get("referrals")
             payment = self.request.query_params.get("good_payment_standing")
+            startDate = self.request.query_params.get("startDate")
+            endDate = self.request.query_params.get("endDate")
             alreadyAdded = False
             if name:
-                statement += "name = \"" + name + "\""
+                statement += "name LIKE \"%%" + name + "%%\""
                 alreadyAdded = True
             if referrals:
                 if alreadyAdded: statement += " AND "   
@@ -60,6 +70,10 @@ class MemberViewSet(viewsets.ModelViewSet):
             if payment:
                 if alreadyAdded: statement += " AND "
                 statement += "good_payment_standing = \"" + payment + "\""
+            if startDate:
+                if endDate:
+                    if alreadyAdded: statement += " AND "
+                    statement += "last_attended BETWEEN \"" + startDate + "\" AND \"" + endDate + "\""
             print(statement)
             queryset = Member.objects.raw(statement)
         else:
@@ -70,6 +84,42 @@ class MemberViewSet(viewsets.ModelViewSet):
 class MembershipViewSet(viewsets.ModelViewSet):
     queryset = Membership.objects.all()
     serializer_class = MembershipSerializer
+
+    def get_queryset(self):
+        print(self.request.query_params)
+        paramExists = False
+        for param in self.request.query_params:
+            if self.request.query_params[param] and self.request.query_params[param] != "NaN":
+                paramExists = True
+
+        if paramExists:
+            statement = "SELECT * FROM gym_membership WHERE "
+            name = self.request.query_params.get("name")
+            cost = self.request.query_params.get("cost")
+            payment_periods = self.request.query_params.get("payment_periods")
+            benefits = self.request.query_params.get("benefits")
+            alreadyAdded = False
+            if name:
+                statement += "name LIKE \"%%" + name + "%%\""
+                alreadyAdded = True
+            if cost and cost != "NaN":
+                if alreadyAdded: statement += " AND "   
+                statement += "cost = \"" + cost + "\""
+                alreadyAdded = True
+            if payment_periods:
+                if alreadyAdded: statement += " AND "
+                statement += "payment_periods = \"" + payment_periods + "\""
+                alreadyAdded = True
+            if benefits:
+                if alreadyAdded: statement += " AND "
+                statement += "benefits LIKE \"%%" + benefits + "%%\""
+            print(statement)
+            queryset = Membership.objects.raw(statement)
+        else:
+            queryset = Membership.objects.all()
+        return queryset
+
+        
 
 
 class EquipmentViewSet(viewsets.ModelViewSet):
@@ -114,6 +164,39 @@ class ServiceHistoryViewset(viewsets.ModelViewSet):
 class GymClassViewset(viewsets.ModelViewSet):
     queryset = GymClass.objects.all()
     serializer_class = GymClassSerializer
+
+    def get_queryset(self):
+        print(self.request.query_params)
+        paramExists = False
+        for param in self.request.query_params:
+            if self.request.query_params[param] and self.request.query_params[param] != "NaN":
+                paramExists = True
+
+        if paramExists:
+            statement = "SELECT * FROM gym_gymclass WHERE "
+            instructor = self.request.query_params.get("instructor")
+            cost = self.request.query_params.get("cost")
+            capacity = self.request.query_params.get("capacity")
+            alreadyAdded = False
+            if instructor:
+                statement += "instructor_id = \"" + instructor + "\""
+                alreadyAdded = True
+            if cost and cost != "NaN":
+                if alreadyAdded: statement += " AND "   
+                statement += "cost = \"" + cost + "\""
+                alreadyAdded = True
+            if capacity and capacity != "NaN":
+                if alreadyAdded: statement += " AND "
+                statement += "capacity >= \"" + capacity + "\""
+                alreadyAdded = True
+            print(statement)
+            queryset = GymClass.objects.raw(statement)
+        else:
+            queryset = GymClass.objects.all()
+        return queryset
+        
+
+
 
 
 class GymClassAttendanceViewset(viewsets.ModelViewSet):

@@ -210,13 +210,10 @@ const Members = (props) => {
               Add a Member
             </Button>
           </div>
-          <div className={mainStyles.tableHouse}>
-            <BootstrapTable columns={columns} data={members} keyField='id' />
-          </div>
           <div className={mainStyles.topper}>
-            <h1>Query Members</h1>
+            <h2>Query Members</h2>
           </div>
-          <div style={{ margin: '5%' }}>
+          <div style={{ margin: '5%', marginTop: '1%' }}>
             <Form
               onSubmit={ async (e) => {
                 e.preventDefault();
@@ -336,6 +333,10 @@ const Members = (props) => {
               </Row>
             </Form>
           </div>
+          <div className={mainStyles.tableHouse}>
+            <BootstrapTable columns={columns} data={members} keyField='id' />
+          </div>
+          
         </>
       );
     } else if (display === 'post') {

@@ -7,6 +7,7 @@ from rest_framework import status
 from django.db.models import F
 from django.db.models.expressions import RawSQL
 
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -18,8 +19,6 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
 
 class MemberViewSet(viewsets.ModelViewSet):
-    queryset = Member.objects.all()
-    serializer_class = MemberSerializer
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
@@ -36,8 +35,9 @@ class MemberViewSet(viewsets.ModelViewSet):
             print('referred is')
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+
     def get_queryset(self):
+        print('uhhh')
         print(self.request.query_params)
         paramExists = False
         for param in self.request.query_params:
@@ -60,25 +60,33 @@ class MemberViewSet(viewsets.ModelViewSet):
                 statement += "name LIKE \"%%" + name + "%%\""
                 alreadyAdded = True
             if referrals:
-                if alreadyAdded: statement += " AND "   
+                if alreadyAdded:
+                    statement += " AND "
                 statement += "referrals = \"" + referrals + "\""
                 alreadyAdded = True
             if membership_type:
-                if alreadyAdded: statement += " AND "
+                if alreadyAdded:
+                    statement += " AND "
                 statement += "membership_type_id = \"" + membership_type + "\""
                 alreadyAdded = True
             if payment:
-                if alreadyAdded: statement += " AND "
+                if alreadyAdded:
+                    statement += " AND "
                 statement += "good_payment_standing = \"" + payment + "\""
             if startDate:
                 if endDate:
-                    if alreadyAdded: statement += " AND "
-                    statement += "last_attended BETWEEN \"" + startDate + "\" AND \"" + endDate + "\""
+                    if alreadyAdded:
+                        statement += " AND "
+                    statement += "last_attended BETWEEN \"" + \
+                        startDate + "\" AND \"" + endDate + "\""
             print(statement)
             queryset = Member.objects.raw(statement)
         else:
-            queryset = Member.objects.raw('SELECT * FROM gym_member')
+            queryset = Member.objects.all()
         return queryset
+
+    queryset = Member.objects.all()
+    serializer_class = MemberSerializer
 
 
 class MembershipViewSet(viewsets.ModelViewSet):
@@ -86,7 +94,6 @@ class MembershipViewSet(viewsets.ModelViewSet):
     serializer_class = MembershipSerializer
 
     def get_queryset(self):
-        print(self.request.query_params)
         paramExists = False
         for param in self.request.query_params:
             if self.request.query_params[param] and self.request.query_params[param] != "NaN":
@@ -103,15 +110,18 @@ class MembershipViewSet(viewsets.ModelViewSet):
                 statement += "name LIKE \"%%" + name + "%%\""
                 alreadyAdded = True
             if cost and cost != "NaN":
-                if alreadyAdded: statement += " AND "   
+                if alreadyAdded:
+                    statement += " AND "
                 statement += "cost = \"" + cost + "\""
                 alreadyAdded = True
             if payment_periods:
-                if alreadyAdded: statement += " AND "
+                if alreadyAdded:
+                    statement += " AND "
                 statement += "payment_periods = \"" + payment_periods + "\""
                 alreadyAdded = True
             if benefits:
-                if alreadyAdded: statement += " AND "
+                if alreadyAdded:
+                    statement += " AND "
                 statement += "benefits LIKE \"%%" + benefits + "%%\""
             print(statement)
             queryset = Membership.objects.raw(statement)
@@ -119,39 +129,45 @@ class MembershipViewSet(viewsets.ModelViewSet):
             queryset = Membership.objects.all()
         return queryset
 
-        
-
 
 class EquipmentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryString = "SELECT * from gym_equipment"
-        
+
         paramsAdded = 0
         # firstParamAdded = 0
 
         if self.request.query_params.get('name'):
-            
-            queryString = queryString + " WHERE name=\'" + self.request.query_params.get('name') + "\'"
+
+            queryString = queryString + " WHERE name=\'" + \
+                self.request.query_params.get('name') + "\'"
             paramsAdded = paramsAdded + 1
 
         if self.request.query_params.get('status'):
             if paramsAdded > 0:
-                queryString = queryString + " AND status=\'" + self.request.query_params.get('status') + "\'"
+                queryString = queryString + " AND status=\'" + \
+                    self.request.query_params.get('status') + "\'"
             else:
-                queryString = queryString + " WHERE status=\'" + self.request.query_params.get('status') + "\'"
-            paramsAdded = paramsAdded + 1
-        
-        if self.request.query_params.get('notes'):
-            if paramsAdded > 0:
-                queryString = queryString + " AND notes=\'" + self.request.query_params.get('notes') + "\'"
-            else:
-                queryString = queryString + " WHERE notes=\'" + self.request.query_params.get('notes') + "\'"
+                queryString = queryString + " WHERE status=\'" + \
+                    self.request.query_params.get('status') + "\'"
             paramsAdded = paramsAdded + 1
 
-        queryset = Equipment.objects.raw(queryString)
+        if self.request.query_params.get('notes'):
+            if paramsAdded > 0:
+                queryString = queryString + " AND notes=\'" + \
+                    self.request.query_params.get('notes') + "\'"
+            else:
+                queryString = queryString + " WHERE notes=\'" + \
+                    self.request.query_params.get('notes') + "\'"
+            paramsAdded = paramsAdded + 1
+
+        if paramsAdded:
+            queryset = Equipment.objects.raw(queryString)
+        else:
+            queryset = Equipment.objects.all()
         return queryset
-    
+
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
 
@@ -182,11 +198,13 @@ class GymClassViewset(viewsets.ModelViewSet):
                 statement += "instructor_id = \"" + instructor + "\""
                 alreadyAdded = True
             if cost and cost != "NaN":
-                if alreadyAdded: statement += " AND "   
+                if alreadyAdded:
+                    statement += " AND "
                 statement += "cost = \"" + cost + "\""
                 alreadyAdded = True
             if capacity and capacity != "NaN":
-                if alreadyAdded: statement += " AND "
+                if alreadyAdded:
+                    statement += " AND "
                 statement += "capacity >= \"" + capacity + "\""
                 alreadyAdded = True
             print(statement)
@@ -194,9 +212,6 @@ class GymClassViewset(viewsets.ModelViewSet):
         else:
             queryset = GymClass.objects.all()
         return queryset
-        
-
-
 
 
 class GymClassAttendanceViewset(viewsets.ModelViewSet):

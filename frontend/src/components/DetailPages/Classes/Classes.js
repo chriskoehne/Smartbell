@@ -428,13 +428,10 @@ const Classes = (props) => {
               Add a Class
             </Button>
           </div>
-          <div className={mainStyles.tableHouse}>
-            <BootstrapTable columns={columns} data={gymClasses} keyField='id' />
+          <div className={mainStyles.query}>
+            <h2>Query Classes</h2>
           </div>
-          <div className={mainStyles.topper}>
-            <h1>Query Classes</h1>
-          </div>
-          <div style={{ margin: '5%' }}>
+          <div style={{ margin: '5%', marginTop: '1%' }}>
             <Form
               onSubmit={ async (e) => {
                 e.preventDefault();
@@ -509,6 +506,9 @@ const Classes = (props) => {
                 </Button>
               </Row>
             </Form>
+          </div>
+          <div className={mainStyles.tableHouse}>
+            <BootstrapTable columns={columns} data={gymClasses} keyField='id' />
           </div>
         </>
       );

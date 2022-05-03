@@ -214,9 +214,9 @@ const Classes = (props) => {
     }
   };
 
-  const idToGymClass = () => {
-    let found = gymClasses.find((cl) => (cl.id = viewingId));
-    found.instructor = found.instructor.id;
+  const idToInstructor = (id) => {
+    let found = instructors.find((cl) => (cl.id === id));
+    //found.instructor = found.instructor.name;
     return found;
   };
 
@@ -224,6 +224,7 @@ const Classes = (props) => {
     console.log(members.find((mem) => (mem.id = member[0].id)));
     return members.find((mem) => (mem.id = member[0].id));
   };
+
 
   const addAttendance = async () => {
     try {
@@ -429,6 +430,85 @@ const Classes = (props) => {
           </div>
           <div className={mainStyles.tableHouse}>
             <BootstrapTable columns={columns} data={gymClasses} keyField='id' />
+          </div>
+          <div className={mainStyles.topper}>
+            <h1>Query Classes</h1>
+          </div>
+          <div style={{ margin: '5%' }}>
+            <Form
+              onSubmit={ async (e) => {
+                e.preventDefault();
+                console.log(instructorEditing)
+                console.log(instructorEditing[0].id)
+                const res = await axios.get('/gym_classes/', {
+                  params: {instructor: instructorEditing[0].id , 
+                    cost: costEditing, 
+                    capacity: capacityEditing, 
+                  }
+                });
+                if (res.status === 200) {
+                  console.log(res.data);
+                  if (res.data[0]) {
+                    res.data[0].instructor = idToInstructor(res.data[0].instructor)
+                  }
+                  setGymClasses(res.data);
+                }
+              }}
+            >
+              <Row>
+                <Form.Group className='mb-3' controlId='referral'>
+                  <Form.Label>Instructor</Form.Label>
+                  <Typeahead
+                    id='basic-typeahead-single'
+                    onChange={setInstructorEditing}
+                    options={getOptions()}
+                    placeholder='Choose an instructor...'
+                    selected={instructorEditing}
+                  />
+                </Form.Group>
+                <Col>
+                  <Form.Group className='mb-3' controlId='cost'>
+                    <Form.Label>Cost</Form.Label>
+                    <Form.Control
+                      placeholder='Enter a dollar amount (no "$")'
+                      type='number'
+                      step='0.01'
+                      value={costEditing}
+                      onChange={(e) => {
+                        if (!isNaN(e.target.value)) {
+                          setCostEditing(
+                            +parseFloat(e.target.value).toFixed(2)
+                          );
+                        }
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group className='mb-3' controlId='cost'>
+                    <Form.Label>Capacity</Form.Label>
+                    <Form.Control
+                      placeholder='Enter a capacity'
+                      type='number'
+                      value={capacityEditing}
+                      onChange={(e) => {
+                        if (!isNaN(e.target.value)) {
+                          setCapacityEditng(+parseInt(e.target.value));
+                        }
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row className={mainStyles.submitHouse}>
+                <Button className='btnCustom' type='submit'>
+                  Submit
+                </Button>
+              </Row>
+            </Form>
           </div>
         </>
       );

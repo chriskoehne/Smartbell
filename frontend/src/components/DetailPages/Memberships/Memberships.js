@@ -227,6 +227,102 @@ const Memberships = (props) => {
               keyField='id'
             />
           </div>
+          <div className={mainStyles.topper}>
+            <h1>Query Memberships</h1>
+          </div>
+          <div style={{ margin: '5%' }}>
+            <Form
+              onSubmit={ async (e) => {
+                e.preventDefault();
+                const res = await axios.get('/memberships/', {
+                  params: {name: nameEditing , 
+                    cost: costEditing, 
+                    payment_periods: periodEditing, 
+                    benefits: benefitsEditing,
+                  }
+                });
+                if (res.status === 200) {
+                  console.log(res.data);
+                  setMemberships(res.data);
+                }
+              }}
+            >
+              <Row>
+                <Col>
+                  <Form.Group className='mb-3' controlId='name'>
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control
+                      type='name'
+                      placeholder='Enter name'
+                      value={nameEditing}
+                      onChange={(e) => {
+                        setNameEditing(e.target.value);
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className='mb-3' controlId='cost'>
+                    <Form.Label>Cost</Form.Label>
+                    <Form.Control
+                      placeholder='Enter a dollar amount (no "$")'
+                      type='number'
+                      step='0.01'
+                      value={costEditing}
+                      onChange={(e) => {
+                        if (!isNaN(e.target.value)) {
+                          setCostEditing(
+                            +parseFloat(e.target.value).toFixed(2)
+                          );
+                        }
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group className='mb-3' controlId='period'>
+                    <Form.Label>Payment Period</Form.Label>
+                    <Form.Select
+                      value={periodEditing}
+                      aria-label='Default select example'
+                      onChange={(e) => {
+                        setPeriodEditing(e.target.value);
+                      }}
+                    >
+                      <option key='W' value='W'>
+                        Weekly
+                      </option>
+                      <option key='M' value='M'>
+                        Monthly
+                      </option>
+                      <option key='Y' value='Y'>
+                        Yearly
+                      </option>
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group className='mb-3' controlId='benefits'>
+                    <Form.Label>Benefits</Form.Label>
+                    <Form.Control
+                      value={benefitsEditing}
+                      placeholder='Enter benefits'
+                      onChange={(e) => {
+                        setBenefitsEditing(e.target.value);
+                      }}
+                    ></Form.Control>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row className={mainStyles.submitHouse}>
+                <Button className='btnCustom' type='submit'>
+                  Submit
+                </Button>
+              </Row>
+            </Form>
+          </div>
         </>
       );
     } else if (display === 'post') {
